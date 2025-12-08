@@ -32,7 +32,6 @@ jobs:
       - name: Compile contracts
         run: yarn build
       - name: Deploy contracts
-        continue-on-error: true
         run: |
           echo "Deploying to contracts to environment: test"
           yarn start -- \
@@ -62,7 +61,6 @@ jobs:
       - name: Compile contracts
         run: yarn build
       - name: Deploy contracts
-        continue-on-error: true
         run: |
           echo "Deploying to contracts to environment: prod"
           yarn start -- \
