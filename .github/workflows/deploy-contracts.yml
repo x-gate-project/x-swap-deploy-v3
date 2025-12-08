@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "Deploying to contracts to environment: test"
           yarn start -- \
-          -pk ${{ secrets.PRIVATE_KEY }} \
+          -pk 0x${{ secrets.PRIVATE_KEY }} \
           -j ${{ secrets.JSON_RPC_URL }} \
           -w9 0x8B85219c0767Ce4FA5ae5944d71aB4a3De27090d \
           -ncl JOCT \
@@ -82,7 +82,7 @@ jobs:
         run: |
           echo "Deploying to contracts to environment: prod"
           yarn start -- \
-          -pk ${{ secrets.PRIVATE_KEY }} \
+          -pk 0x${{ secrets.PRIVATE_KEY }} \
           -j ${{ secrets.JSON_RPC_URL }} \
           -w9 0x03527b82f384184097295fc60be0B59B8FE06E00 \
           -ncl JOC \
