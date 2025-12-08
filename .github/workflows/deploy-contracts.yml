@@ -1,0 +1,103 @@
+name: Deploy contracts
+run-name: Deploy contracts to ${{ inputs.environment }} environment by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select deployment environment"
+        required: true
+        default: test
+        type: choice
+        options:
+          - test
+          - prod
+
+jobs:
+  deploy-test-contracts:
+    if: ${{ github.event.inputs.environment == 'test' }}
+    environment: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: test
+      - name: Setup Node.js v16
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - name: Install yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn install
+      - name: Compile contracts
+        run: yarn build
+      - name: Deploy contracts
+        continue-on-error: true
+        run: |
+          echo "Deploying to contracts to environment: test"
+          yarn start -- \
+          -pk ${{ secrets.PRIVATE_KEY }} \
+          -j ${{ secrets.JSON_RPC_URL }} \
+          -w9 0x8B85219c0767Ce4FA5ae5944d71aB4a3De27090d \
+          -ncl JOCT \
+          -o ${{ secrets.OWNER_ADDRESS }} \
+          -v2 0x43bFE3948b41B045261E5A697bbfad00d8328130 \
+          -g 107
+      - name: Commit and push updates
+        run: |
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+
+          git add .
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: deploy contracts to test environment"
+            git push origin test
+          fi
+
+  deploy-prod-contracts:
+    if: ${{ github.event.inputs.environment == 'prod' }}
+    environment: prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: prod
+      - name: Setup Node.js v16
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - name: Install yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn install
+      - name: Compile contracts
+        run: yarn build
+      - name: Deploy contracts
+        continue-on-error: true
+        run: |
+          echo "Deploying to contracts to environment: prod"
+          yarn start -- \
+          -pk ${{ secrets.PRIVATE_KEY }} \
+          -j ${{ secrets.JSON_RPC_URL }} \
+          -w9 0x03527b82f384184097295fc60be0B59B8FE06E00 \
+          -ncl JOC \
+          -o ${{ secrets.OWNER_ADDRESS }} \
+          -v2 0x936e3Dc5F46a0fE1BdE6dB255e97B88fB675fEC2 \
+          -g 107
+      - name: Commit and push updates
+        run: |
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+
+          git add .
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: deploy contracts to prod environment"
+            git push origin prod
+          fi
