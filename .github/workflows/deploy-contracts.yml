@@ -21,8 +21,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: test
       - name: Setup Node.js v16
         uses: actions/setup-node@v4
         with:
@@ -53,8 +51,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: prod
       - name: Setup Node.js v16
         uses: actions/setup-node@v4
         with:
