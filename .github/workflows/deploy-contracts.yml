@@ -45,18 +45,6 @@ jobs:
           -o ${{ secrets.OWNER_ADDRESS }} \
           -v2 0x43bFE3948b41B045261E5A697bbfad00d8328130 \
           -g 107
-      - name: Commit and push updates
-        run: |
-          git config user.name ${{ github.actor }}
-          git config user.email ${{ github.actor }}@users.noreply.github.com
-
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "chore: deploy contracts to test environment"
-            git push origin test
-          fi
 
   deploy-prod-contracts:
     if: ${{ github.event.inputs.environment == 'prod' }}
@@ -89,15 +77,3 @@ jobs:
           -o ${{ secrets.OWNER_ADDRESS }} \
           -v2 0x936e3Dc5F46a0fE1BdE6dB255e97B88fB675fEC2 \
           -g 107
-      - name: Commit and push updates
-        run: |
-          git config user.name ${{ github.actor }}
-          git config user.email ${{ github.actor }}@users.noreply.github.com
-
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "chore: deploy contracts to prod environment"
-            git push origin prod
-          fi
